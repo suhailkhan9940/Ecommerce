@@ -142,6 +142,8 @@ public class AdminController {
         String imageName = image.isEmpty()? "default.jpg" : image.getOriginalFilename();
 
         product.setImage(imageName);
+        product.setDiscount(0);
+        product.setDiscountPrice(product.getPrice());
         Product saveProduct = productService.saveProduct(product);
 
         if(!ObjectUtils.isEmpty(saveProduct)){
@@ -149,7 +151,6 @@ public class AdminController {
             File saveFile =  new ClassPathResource("static/img").getFile();
             Path path = Paths.get(saveFile.getAbsolutePath()+File.separator+"product_img"+File.separator+image.getOriginalFilename());
 
-            System.out.println(path);
             Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
             session.setAttribute("succMsg", "Product saved Successfully");
@@ -192,14 +193,17 @@ public class AdminController {
                                 HttpSession session) throws IOException {
 
 
-        Product updateProduct = productService.updateProduct(product,image);
-
-        if (!ObjectUtils.isEmpty(updateProduct)){
-            session.setAttribute("succMsg", "Product updated successfully");
+        if (product.getDiscount()<0 || product.getDiscount()>100){
+            session.setAttribute("errorMsg", "Invalid Discount");
         }else {
-            session.setAttribute("errorMsg", "Something went wrong");
-        }
+            Product updateProduct = productService.updateProduct(product,image);
 
+            if (!ObjectUtils.isEmpty(updateProduct)){
+                session.setAttribute("succMsg", "Product updated successfully");
+            }else {
+                session.setAttribute("errorMsg", "Something went wrong");
+            }
+        }
         return "redirect:/admin/editProduct/"+product.getId();
     }
 

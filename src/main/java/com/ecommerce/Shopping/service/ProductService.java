@@ -18,5 +18,5 @@ public interface ProductService {
 
     public Product updateProduct(Product product, MultipartFile file) throws IOException;
 
-    public List<Product> getAllActiveProduct();
+    public List<Product> getAllActiveProduct(String category);
 }

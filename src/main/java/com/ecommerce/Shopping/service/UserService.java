@@ -1,7 +1,7 @@
 package com.ecommerce.Shopping.service;
 
-import com.ecommerce.Shopping.model.UserDetails;
+import com.ecommerce.Shopping.model.UserDtls;
 
 public interface UserService {
-    public UserDetails saveUser(UserDetails user);
+    public UserDtls saveUser(UserDtls user);
 }

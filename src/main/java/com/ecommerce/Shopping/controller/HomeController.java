@@ -2,8 +2,7 @@ package com.ecommerce.Shopping.controller;
 
 import com.ecommerce.Shopping.model.Category;
 import com.ecommerce.Shopping.model.Product;
-import com.ecommerce.Shopping.model.UserDetails;
-import com.ecommerce.Shopping.repository.ProductRepository;
+import com.ecommerce.Shopping.model.UserDtls;
 import com.ecommerce.Shopping.service.CategoryService;
 import com.ecommerce.Shopping.service.ProductService;
 import com.ecommerce.Shopping.service.UserService;
@@ -41,7 +40,7 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/signin")
     public String login(){
         return "login";
     }
@@ -72,13 +71,13 @@ public class HomeController {
 
 
     @PostMapping("/saveUser")
-    public String saveUSer(@ModelAttribute UserDetails user, @RequestParam("img")
+    public String saveUSer(@ModelAttribute UserDtls user, @RequestParam("img")
             MultipartFile file, HttpSession session) throws IOException {
 
         String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
 
         user.setProfileImage(imageName);
-        UserDetails saveUser = userService.saveUser(user);
+        UserDtls saveUser = userService.saveUser(user);
 
         if (!ObjectUtils.isEmpty(saveUser)) {
             if (!file.isEmpty()) {
@@ -91,7 +90,6 @@ public class HomeController {
                 }
 
                 Path path = Paths.get(profileImgDir.getAbsolutePath(), file.getOriginalFilename());
-                System.out.println("Saving file to: " + path);
 
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
             }

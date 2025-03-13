@@ -32,23 +32,27 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
 
         UserDtls userDtls = userRepository.findByEmail(email);
 
-        if (userDtls.getIsEnable()){
-            if (userDtls.getAccountNonLocked()){
-                if (userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME){
-                    userService.increaseFailedAttempt(userDtls);
+        if (userDtls != null){
+            if (userDtls.getIsEnable()){
+                if (userDtls.getAccountNonLocked()){
+                    if (userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME){
+                        userService.increaseFailedAttempt(userDtls);
+                    }else {
+                        userService.userAccountLock(userDtls);
+                        exception = new LockedException("Your Account is Locked  || failed attempt 3");
+                    }
                 }else {
-                    userService.userAccountLock(userDtls);
-                    exception = new LockedException("Your Account is Locked  || failed attempt 3");
+                    if (userService.unlockAccountTimeExpired(userDtls)){
+                        exception = new LockedException("Your Account is Locked  || please try to login");
+                    }else {
+                        exception = new LockedException("Your Account is Locked || please try to login after sometime");
+                    }
                 }
             }else {
-                if (userService.unlockAccountTimeExpired(userDtls)){
-                    exception = new LockedException("Your Account is Locked  || please try to login");
-                }else {
-                    exception = new LockedException("Your Account is Locked || please try to login after sometime");
-                }
+                exception = new LockedException("Your Account is Inactive");
             }
-        }else {
-            exception = new LockedException("Your Account is Inactive");
+        }else{
+            exception = new LockedException("Email and Password is invalid");
         }
 
         super.setDefaultFailureUrl("/signin?error");

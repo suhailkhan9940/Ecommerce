@@ -2,19 +2,18 @@ package com.ecommerce.Shopping.controller;
 
 import com.ecommerce.Shopping.model.Cart;
 import com.ecommerce.Shopping.model.Category;
+import com.ecommerce.Shopping.model.OrderRequest;
 import com.ecommerce.Shopping.model.UserDtls;
 import com.ecommerce.Shopping.service.CartService;
 import com.ecommerce.Shopping.service.CategoryService;
+import com.ecommerce.Shopping.service.OrderService;
 import com.ecommerce.Shopping.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -30,6 +29,9 @@ public class UserController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping("/")
     public String home(){
@@ -88,7 +90,33 @@ public class UserController {
     }
 
     @GetMapping("/orders")
-    public String orderPage(){
+    public String orderPage(Principal p, Model model){
+
+        UserDtls user = getLoggedInUserDetails(p);
+        List<Cart> carts = cartService.getCartByUser(user.getId());
+        model.addAttribute("carts", carts);
+
+        if (carts.size() > 0){
+            Double orderPrice = carts.get(carts.size()-1).getTotalOrderPrice();
+            Double totalOrderPrice = carts.get(carts.size()-1).getTotalOrderPrice() + 250 + 100;
+            model.addAttribute("orderPrice", orderPrice);
+            model.addAttribute("totalOrderPrice", totalOrderPrice);
+        }
+
         return "/user/order";
+    }
+
+    @PostMapping("/save-order")
+    public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
+        // System.out.println(request);
+        UserDtls user = getLoggedInUserDetails(p);
+        orderService.saveOrder(user.getId(), request);
+
+        return "redirect:/user/success";
+    }
+
+    @GetMapping("/success")
+    public String loadSuccess(){
+        return "/user/success";
     }
 }

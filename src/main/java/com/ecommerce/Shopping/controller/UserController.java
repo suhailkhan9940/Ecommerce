@@ -5,6 +5,7 @@ import com.ecommerce.Shopping.service.CartService;
 import com.ecommerce.Shopping.service.CategoryService;
 import com.ecommerce.Shopping.service.OrderService;
 import com.ecommerce.Shopping.service.UserService;
+import com.ecommerce.Shopping.util.CommomUtil;
 import com.ecommerce.Shopping.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class UserController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private CommomUtil commonUtil;
 
     @GetMapping("/")
     public String home(){
@@ -105,7 +109,7 @@ public class UserController {
     }
 
     @PostMapping("/save-order")
-    public String saveOrder(@ModelAttribute OrderRequest request, Principal p) {
+    public String saveOrder(@ModelAttribute OrderRequest request, Principal p) throws Exception {
         // System.out.println(request);
         UserDtls user = getLoggedInUserDetails(p);
         orderService.saveOrder(user.getId(), request);
@@ -138,9 +142,15 @@ public class UserController {
             }
         }
 
-        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+        ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
 
-        if (updateOrder) {
+        try {
+            commonUtil.sendMailForProductOrder(updateOrder, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!ObjectUtils.isEmpty(updateOrder)) {
             session.setAttribute("succMsg", "Status Updated");
         } else {
             session.setAttribute("errorMsg", "status not updated");

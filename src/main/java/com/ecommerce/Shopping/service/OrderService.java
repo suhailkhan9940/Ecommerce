@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface OrderService {
 
-    public void saveOrder(Integer userId, OrderRequest orderRequest) throws Exception;
+    void saveOrder(Integer userId, OrderRequest orderRequest) throws Exception;
 
-    public List<ProductOrder> getOrdersByUser(Integer userId);
+    List<ProductOrder> getOrdersByUser(Integer userId);
 
-    public ProductOrder updateOrderStatus(Integer id, String status);
+    ProductOrder updateOrderStatus(Integer id, String status);
 
-    public List<ProductOrder> getAllOrders();
+    List<ProductOrder> getAllOrders();
+
+    ProductOrder getOrdersByOrderId(String orderId);
 }

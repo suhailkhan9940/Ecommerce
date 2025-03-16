@@ -19,4 +19,6 @@ public interface ProductService {
     public Product updateProduct(Product product, MultipartFile file) throws IOException;
 
     public List<Product> getAllActiveProduct(String category);
+
+    public List<Product> searchProduct(String ch);
 }

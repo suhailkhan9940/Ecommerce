@@ -193,8 +193,14 @@ public class AdminController {
     }
 
     @GetMapping("/products")
-    public String loadViewProduct(Model model){
-        model.addAttribute("products", productService.getAllProduct());
+    public String loadViewProduct(Model model, @RequestParam(defaultValue = "") String ch){
+        List<Product> products = null;
+        if (ch != null && ch.length() > 0) {
+            products = productService.searchProduct(ch);
+        } else {
+            products = productService.getAllProduct();
+        }
+        model.addAttribute("products", products);
         return "admin/products";
     }
 

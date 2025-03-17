@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface CartRepository extends JpaRepository<Cart, Integer> {
 
-    public Cart findByProductIdAndUserId(Integer productId, Integer userId);
+    Cart findByProductIdAndUserId(Integer productId, Integer userId);
 
-    public Integer countByUserId(Integer userId);
+    Integer countByUserId(Integer userId);
 
-    public List<Cart> findByUserId(Integer userId);
+    List<Cart> findByUserId(Integer userId);
 
 }

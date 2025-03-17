@@ -6,29 +6,33 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService {
-    public UserDtls saveUser(UserDtls user);
+    UserDtls saveUser(UserDtls user);
 
-    public UserDtls getUserByEmail(String email);
+    UserDtls getUserByEmail(String email);
 
-    public List<UserDtls> getUsers(String role);
+    List<UserDtls> getUsers(String role);
 
-    public  Boolean updateAccountStatus(Integer id, Boolean status);
+    Boolean updateAccountStatus(Integer id, Boolean status);
 
-    public void increaseFailedAttempt(UserDtls user);
+    void increaseFailedAttempt(UserDtls user);
 
-    public void userAccountLock(UserDtls userDtls);
+    void userAccountLock(UserDtls userDtls);
 
-    public Boolean unlockAccountTimeExpired(UserDtls user);
+    Boolean unlockAccountTimeExpired(UserDtls user);
 
-    public void resetAttempt(int userId);
+    void resetAttempt(int userId);
 
-    public void updateUserResetToken(String email, String resetToken);
+    void updateUserResetToken(String email, String resetToken);
 
-    public UserDtls getUserByToken(String token);
+    UserDtls getUserByToken(String token);
 
-    public  UserDtls updateUser(UserDtls user);
+    UserDtls updateUser(UserDtls user);
 
-    public UserDtls updateUserProfile(UserDtls user, MultipartFile img);
+    UserDtls updateUserProfile(UserDtls user, MultipartFile img);
 
-    public UserDtls saveAdmin(UserDtls user);
+    UserDtls saveAdmin(UserDtls user);
+
+    Boolean existsEmail(String email);
+
+
 }
